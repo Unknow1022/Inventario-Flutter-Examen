@@ -1,0 +1,190 @@
+# 📘 INFORME TÉCNICO - SISTEMA DE GESTIÓN DE BIBLIOTECA DIGITAL
+
+## 🧩 Descripción General
+
+El presente documento describe el desarrollo completo del **Sistema de Gestión de Biblioteca Digital**, implementado como parte del examen práctico del curso **Desarrollo de Aplicaciones Móviles**.  
+El sistema fue construido utilizando **Flutter** como frontend, **PHP** como API backend y **MySQL** como base de datos.
+
+---
+
+## ⚙️ Arquitectura del Sistema
+
+El sistema se desarrolló bajo una **arquitectura cliente-servidor**, donde:
+
+- **Frontend (Flutter):** Se encarga de la interfaz de usuario y la interacción con el sistema.
+- **Backend (PHP):** Proporciona una API REST para las operaciones CRUD.
+- **Base de Datos (MySQL):** Almacena los datos persistentes de los libros.
+
+### Estructura General
+
+```
+📁 flutter_biblioteca/
+│
+├── lib/
+│   ├── main.dart
+│   ├── models/
+│   │   └── libro.dart
+│   ├── services/
+│   │   └── biblioteca_service.dart
+│   └── screens/
+│       ├── lista_libros.dart
+│       ├── agregar_libro.dart
+│       ├── editar_libro.dart
+│       └── detalle_libro.dart
+│
+📁 api_biblioteca/
+│   ├── conexion.php
+│   └── api_biblioteca.php
+│
+📁 database/
+│   └── biblioteca_digital.sql
+```
+
+---
+
+## 🗄️ Base de Datos (MySQL)
+
+### Nombre de la Base de Datos:
+`biblioteca_digital`
+
+### Estructura de la Tabla `libros`:
+```sql
+CREATE TABLE libros (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(200) NOT NULL,
+  autor VARCHAR(150) NOT NULL,
+  isbn VARCHAR(20) UNIQUE NOT NULL,
+  categoria VARCHAR(100) NOT NULL,
+  año_publicacion YEAR NOT NULL,
+  disponible BOOLEAN DEFAULT TRUE,
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Datos de Ejemplo Insertados:
+```sql
+INSERT INTO libros (titulo, autor, isbn, categoria, año_publicacion) VALUES
+('Cien Años de Soledad', 'Gabriel García Márquez', '9780307474728', 'Novela', 1967),
+('Don Quijote de la Mancha', 'Miguel de Cervantes', '9780060934347', 'Clásico', 1605),
+('1984', 'George Orwell', '9780451524935', 'Distopía', 1949),
+('El Principito', 'Antoine de Saint-Exupéry', '9780156012195', 'Infantil', 1943),
+('Rayuela', 'Julio Cortázar', '9788437604947', 'Novela', 1963);
+```
+
+---
+
+## 🧠 Backend (PHP - API REST)
+
+El backend fue desarrollado utilizando PHP con el servidor **Apache** de XAMPP.  
+Se implementó una API REST capaz de procesar solicitudes HTTP (`GET`, `POST`, `PUT`, `DELETE`) para las operaciones CRUD.
+
+### Archivo `conexion.php`
+Define la conexión a la base de datos:
+```php
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "biblioteca_digital";
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+  die(json_encode(["error" => "Error de conexión: " . $conn->connect_error]));
+}
+?>
+```
+
+### Archivo `api_biblioteca.php`
+Contiene los endpoints principales:
+
+| Método | Endpoint | Descripción |
+|--------|-----------|-------------|
+| `GET` | `/api_biblioteca.php` | Lista todos los libros |
+| `GET` | `/api_biblioteca.php?id=1` | Obtiene un libro por ID |
+| `POST` | `/api_biblioteca.php` | Crea un nuevo libro |
+| `PUT` | `/api_biblioteca.php` | Actualiza un libro existente |
+| `DELETE` | `/api_biblioteca.php?id=1` | Elimina un libro |
+
+Todas las respuestas son devueltas en formato **JSON**.
+
+---
+
+## 📱 Frontend (Flutter)
+
+El frontend fue construido con Flutter, permitiendo una interfaz amigable y funcional.  
+Se utilizó el paquete `http` para la comunicación con la API.
+
+### Dependencias
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  cupertino_icons: ^1.0.2
+```
+
+### Estructura del Código
+
+#### Modelo (`libro.dart`)
+Define la estructura de los datos de los libros y la conversión desde/hacia JSON.
+
+#### Servicio (`biblioteca_service.dart`)
+Contiene las funciones que consumen la API (`fetchLibros`, `agregarLibro`, `actualizarLibro`, `eliminarLibro`).
+
+#### Pantallas (`screens/`)
+- **lista_libros.dart:** Muestra el listado de libros con botones para editar o eliminar.  
+- **agregar_libro.dart:** Formulario para agregar nuevos libros.  
+- **editar_libro.dart:** Permite modificar información de un libro existente.  
+- **detalle_libro.dart:** Muestra detalles de un libro seleccionado.
+
+---
+
+## 🧩 Funcionalidades Implementadas
+
+| Función | Descripción |
+|----------|--------------|
+| **CREATE** | Permite registrar un nuevo libro mediante formulario validado. |
+| **READ** | Muestra una lista actualizada de todos los libros almacenados. |
+| **UPDATE** | Posibilita editar la información de un libro existente. |
+| **DELETE** | Elimina un libro con confirmación del usuario. |
+
+---
+
+## 💻 Pruebas y Validaciones
+
+Las pruebas fueron realizadas mediante:
+- **Postman** para verificar los endpoints del API.
+- **Emulador Android** para probar la aplicación móvil.
+
+Cada operación CRUD fue validada y probada individualmente, verificando la correcta actualización en la base de datos.
+
+---
+
+## 📊 Resultados
+
+El sistema logró cumplir todos los objetivos planteados:
+
+✅ CRUD funcional completo  
+✅ Conexión exitosa entre Flutter ↔ PHP ↔ MySQL  
+✅ Validaciones básicas implementadas  
+✅ Interfaz limpia y responsiva
+
+---
+
+## 📈 Conclusiones
+
+El proyecto demuestra la correcta integración entre Flutter, PHP y MySQL para el desarrollo de sistemas móviles con conexión a bases de datos.  
+La estructura modular y la separación de capas garantizan mantenibilidad, escalabilidad y facilidad de comprensión.
+
+---
+
+## 👨‍💻 Autor
+
+**Nombre:** [Tu Nombre Aquí]  
+**Curso:** Desarrollo de Aplicaciones Móviles  
+**Fecha:** 17/10/2025
+
+---
+
+© 2025 - Proyecto Académico | Sistema de Gestión de Biblioteca Digital
